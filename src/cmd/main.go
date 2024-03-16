@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/nodonoghue/ppm/internal/utils"
+	"github.com/nodonoghue/ppm/internal/generate"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 	var wg sync.WaitGroup
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
-		go utils.CreatePassword(ch, &wg)
+		go generate.Password(ch, &wg)
 	}
 	wg.Wait()
 	close(ch)
