@@ -1,4 +1,4 @@
-package utils
+package generate
 
 import (
 	"math/rand"
@@ -8,7 +8,7 @@ import (
 	"github.com/nodonoghue/ppm/internal/models"
 )
 
-func CreatePassword(ch chan<- string, wg *sync.WaitGroup) {
+func Password(ch chan<- string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 

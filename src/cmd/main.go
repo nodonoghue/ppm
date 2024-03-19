@@ -1,24 +1,29 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"sync"
 
-	"github.com/nodonoghue/ppm/internal/utils"
+	"github.com/nodonoghue/ppm/internal/cli"
+	"github.com/nodonoghue/ppm/internal/generate"
 )
 
 func main() {
 
+	commandFlags := cli.GetFlags()
+	flag.Parse()
+
 	fmt.Println("Generating 10 AllChars Password Examples:")
 	fmt.Println("-----------------------------------------")
 
-	ch := make(chan string, 10)
+	ch := make(chan string, *commandFlags.Options)
 
 	//generate 10 options
 	var wg sync.WaitGroup
-	for i := 0; i < 10; i++ {
+	for i := 0; i < *commandFlags.Options; i++ {
 		wg.Add(1)
-		go utils.CreatePassword(ch, &wg)
+		go generate.Password(ch, &wg)
 	}
 	wg.Wait()
 	close(ch)
