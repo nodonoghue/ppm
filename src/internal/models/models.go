@@ -1,5 +1,11 @@
 package models
 
 type CommandFlags struct {
-	Options *int
+	NumVariants  *int
+	Length       *int
+	NumUpperCase *int
+	NumLowerCase *int
+	NumNumbers   *int
+	NumSpecial   *int
+	IsHelp       *bool
 }
