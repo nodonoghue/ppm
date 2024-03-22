@@ -12,6 +12,7 @@ import (
 
 	"github.com/nodonoghue/ppm/internal/cli"
 	"github.com/nodonoghue/ppm/internal/generate"
+	"github.com/nodonoghue/ppm/internal/save"
 )
 
 func main() {
@@ -24,7 +25,6 @@ func main() {
 
 	ch := make(chan string, *commandFlags.NumVariants)
 
-	//generate 10 options
 	var wg sync.WaitGroup
 	for i := 0; i < *commandFlags.NumVariants; i++ {
 		wg.Add(1)
@@ -47,6 +47,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Unable to read input")
 	}
+	//for windows use "/r/n" instead of "/n"  need to add code to check current environment and determine the correct new line char(s)
 	num, err := strconv.Atoi(strings.Replace(input, "\n", "", -1))
 	if err != nil {
 		log.Fatal("Input must be numeric. ", err.Error())
@@ -55,4 +56,7 @@ func main() {
 	selected := variants[num-1]
 
 	fmt.Printf("You have selected: %s\n", selected)
+
+	save.SaveValue(selected)
+	fmt.Println("Saved to your bucket")
 }
