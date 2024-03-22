@@ -9,3 +9,10 @@ type CommandFlags struct {
 	NumSpecial   *int
 	IsHelp       *bool
 }
+
+type BucketDrop struct {
+	Name     string `json:"Name"`
+	URI      string `json:"Uri"`
+	Username string `json:"Username"`
+	Password string `json:"Password"`
+}
