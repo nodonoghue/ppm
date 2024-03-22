@@ -1,11 +1,11 @@
 package models
 
-type GenerationError struct {
+type GeneralError struct {
 	Message       string
 	FunctionName  string
 	Configuration CommandFlags
 }
 
-func (generationError *GenerationError) Error() string {
+func (generationError GeneralError) Error() string {
 	return generationError.Message
 }

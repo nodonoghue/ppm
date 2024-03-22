@@ -24,7 +24,6 @@ func main() {
 
 	ch := make(chan string, *commandFlags.NumVariants)
 
-	//generate 10 options
 	var wg sync.WaitGroup
 	for i := 0; i < *commandFlags.NumVariants; i++ {
 		wg.Add(1)
