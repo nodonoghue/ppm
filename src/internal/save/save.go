@@ -6,26 +6,31 @@ import (
 	"github.com/nodonoghue/ppm/internal/models"
 )
 
-// write a file, simple plain text output for now, will need to think of a system to
-// store the file based on some initial user input and configuration, then create a
-// pass phrase system to encrypt and decrypt the file for safe storage of the passwords
 func SaveValue(val string) error {
-	if !checkFile("") {
-		var error models.GeneralError
-		error.FunctionName = "save.checkFile"
-		error.Message = "File does not exist"
-		return error
+	return writeFile(val)
+}
+
+func openFile(filename string) (*os.File, error) {
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
+}
+
+func writeFile(val string) error {
+	//get const for file name
+	filename := models.Filename
+	var file *os.File
+	var err error
+	file, err = openFile(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	if _, writeErr := file.WriteString(val + "\n"); writeErr != nil {
+		return writeErr
 	}
 	return nil
-}
-
-func checkFile(filename string) bool {
-	if _, err := os.Stat(filename); err != nil {
-		return false
-	}
-	return true
-}
-
-func writeFile() {
-
 }
