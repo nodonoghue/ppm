@@ -1,22 +1,19 @@
 package main
 
 import (
-	"bufio"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
-	"strings"
 	"sync"
 
 	"github.com/nodonoghue/ppm/internal/cli"
 	"github.com/nodonoghue/ppm/internal/generate"
+	"github.com/nodonoghue/ppm/internal/models"
 	"github.com/nodonoghue/ppm/internal/save"
 )
 
 func main() {
-
 	commandFlags := cli.GetFlags()
 	flag.Parse()
 
@@ -24,7 +21,6 @@ func main() {
 	fmt.Println("-----------------------------------------")
 
 	ch := make(chan string, *commandFlags.NumVariants)
-
 	var wg sync.WaitGroup
 	for i := 0; i < *commandFlags.NumVariants; i++ {
 		wg.Add(1)
@@ -34,29 +30,40 @@ func main() {
 	close(ch)
 
 	optionNum := 1
-	variants := make(map[int]string)
+	models.Variants = make(map[int]string)
 	for password := range ch {
 		fmt.Printf("Option %d: %s\n", optionNum, password)
-		variants[optionNum-1] = password
+		models.Variants[optionNum-1] = password
 		optionNum++
 	}
 
-	fmt.Println("Select an Option to copy to the clipboard")
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
+	fmt.Println("Select an Option to copy to save to your bucket")
+	pwIndex := cli.ReadInput()
+	password := cli.GetVariant(pwIndex)
+
+	fmt.Println("What is the username?")
+	username := cli.ReadInput()
+
+	fmt.Println("What is the URI/URL associated with this login?")
+	uri := cli.ReadInput()
+
+	fmt.Println("Give this login a name:")
+	name := cli.ReadInput()
+
+	var drop models.BucketDrop
+
+	drop.Password = password
+	drop.Name = name
+	drop.URI = uri
+	drop.Username = username
+
+	fmt.Printf("You have selected: %s\n", password)
+
+	u, err := json.Marshal(drop)
 	if err != nil {
-		log.Fatal("Unable to read input")
-	}
-	//for windows use "/r/n" instead of "/n"  need to add code to check current environment and determine the correct new line char(s)
-	num, err := strconv.Atoi(strings.Replace(input, "\n", "", -1))
-	if err != nil {
-		log.Fatal("Input must be numeric. ", err.Error())
+		log.Fatal("Unable to marshal struct to json: ", err.Error())
 	}
 
-	selected := variants[num-1]
-
-	fmt.Printf("You have selected: %s\n", selected)
-
-	save.SaveValue(selected)
+	save.SaveValue(string(u))
 	fmt.Println("Saved to your bucket")
 }

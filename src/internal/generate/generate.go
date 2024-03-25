@@ -13,12 +13,6 @@ func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.Command
 	defer wg.Done()
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	// //use shuffle to create a len20 password and print to terminal:
-	// buf := make([]byte, models.Length)
-	// for i := 0; i < models.Length; i++ {
-	// 	buf[i] = models.AllChars[rand.Intn(len(models.AllChars))]
-	// }
-
 	var builder strings.Builder
 
 	if *configuration.NumUpperCase > 0 {
