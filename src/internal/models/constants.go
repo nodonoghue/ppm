@@ -1,9 +1,11 @@
 package models
 
-const UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const LowerCase = "abcdefghijklmnopqrstuvwxyz"
-const Numbers = "0123456789"
-const SpecialChars = "!@#$%^&*"
-const AllChars = UpperCase + LowerCase + Numbers + SpecialChars
-const Length = 20
-const Filename = "pwbucket.ppm"
+const (
+	UpperCase    = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	LowerCase    = "abcdefghijklmnopqrstuvwxyz"
+	Numbers      = "0123456789"
+	SpecialChars = "!@#$%^&*"
+	AllChars     = UpperCase + LowerCase + Numbers + SpecialChars
+	Length       = 20
+	Filename     = "pwbucket.ppm"
+)
