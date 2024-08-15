@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/nodonoghue/ppm/internal/models"
+	"github.com/nodonoghue/ppm/internal/models/constants"
 )
 
 func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.CommandFlags) {
@@ -36,7 +37,7 @@ func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.Command
 func getUpperChars(numUpper int) string {
 	buf := make([]byte, numUpper)
 	for i := 0; i < numUpper; i++ {
-		buf[i] = models.UpperCase[rand.Intn(len(models.UpperCase))]
+		buf[i] = constants.UpperCase[rand.Intn(len(constants.UpperCase))]
 	}
 	return string(buf)
 }
@@ -44,7 +45,7 @@ func getUpperChars(numUpper int) string {
 func getNumberChars(numNumbers int) string {
 	buf := make([]byte, numNumbers)
 	for i := 0; i < numNumbers; i++ {
-		buf[i] = models.Numbers[rand.Intn(len(models.Numbers))]
+		buf[i] = constants.Numbers[rand.Intn(len(constants.Numbers))]
 	}
 	return string(buf)
 }
@@ -52,7 +53,7 @@ func getNumberChars(numNumbers int) string {
 func getSpecialChars(numSpecialChars int) string {
 	buf := make([]byte, numSpecialChars)
 	for i := 0; i < numSpecialChars; i++ {
-		buf[i] = models.SpecialChars[rand.Intn(len(models.SpecialChars))]
+		buf[i] = constants.SpecialChars[rand.Intn(len(constants.SpecialChars))]
 	}
 	return string(buf)
 }
@@ -60,7 +61,7 @@ func getSpecialChars(numSpecialChars int) string {
 func getLowerChars(numLower int) string {
 	buf := make([]byte, numLower)
 	for i := 0; i < numLower; i++ {
-		buf[i] = models.LowerCase[rand.Intn(len(models.LowerCase))]
+		buf[i] = constants.LowerCase[rand.Intn(len(constants.LowerCase))]
 	}
 	return string(buf)
 }

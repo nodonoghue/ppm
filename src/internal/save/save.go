@@ -3,7 +3,7 @@ package save
 import (
 	"os"
 
-	"github.com/nodonoghue/ppm/internal/models"
+	"github.com/nodonoghue/ppm/internal/models/constants"
 )
 
 func SaveValue(val string) error {
@@ -19,18 +19,15 @@ func openFile(filename string) (*os.File, error) {
 }
 
 func writeFile(val string) error {
-	//get const for file name
-	filename := models.Filename
-	var file *os.File
-	var err error
-	file, err = openFile(filename)
+	filename := constants.Filename
+	file, err := openFile(filename)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	if _, writeErr := file.WriteString(val + "\n"); writeErr != nil {
-		return writeErr
+	if _, err := file.WriteString(val + "\n"); err != nil {
+		return err
 	}
 	return nil
 }
