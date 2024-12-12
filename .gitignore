@@ -21,8 +21,10 @@ ppm
 # Go workspace file
 go.work
 
-# vscode 
+# editors 
 .vscode/
+.kdev4/
+*.kdev4
 
 *.ppm
 !ppm/
