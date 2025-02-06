@@ -15,6 +15,9 @@ import (
 
 func main() {
 	commandFlags := cli.GetFlags()
+
+	//need to hijack the process here, if no flags passed in, present the --help
+
 	flag.Parse()
 
 	fmt.Printf("Generating %d AllChars Password Examples:\n", *commandFlags.NumVariants)
