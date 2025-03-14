@@ -67,6 +67,8 @@ func main() {
 		log.Fatal("Unable to marshal struct to json: ", err.Error())
 	}
 
-	save.SaveValue(string(u))
+	if err := save.Value(string(u)); err != nil {
+		log.Fatal("Unable to save struct to file: ", err.Error())
+	}
 	fmt.Println("Saved to your bucket")
 }

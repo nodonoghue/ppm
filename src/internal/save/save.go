@@ -1,12 +1,13 @@
 package save
 
 import (
+	"log"
 	"os"
 
 	"github.com/nodonoghue/ppm/internal/models/constants"
 )
 
-func SaveValue(val string) error {
+func Value(val string) error {
 	return writeFile(val)
 }
 
@@ -24,7 +25,12 @@ func writeFile(val string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(file)
 
 	if _, err := file.WriteString(val + "\n"); err != nil {
 		return err
