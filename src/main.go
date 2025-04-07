@@ -14,9 +14,10 @@ import (
 )
 
 func main() {
-	commandFlags := cli.GetFlags()
 
-	//need to hijack the process here, if no flags passed in, present the --help
+	//TODO: Add a tui to the generation, selection, saving, and lookup processes.
+	
+	commandFlags := cli.GetFlags()
 
 	flag.Parse()
 

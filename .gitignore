@@ -25,6 +25,7 @@ go.work
 .vscode/
 .kdev4/
 *.kdev4
+.idea/
 
 *.ppm
 !ppm/
