@@ -6,6 +6,6 @@ type GeneralError struct {
 	Configuration CommandFlags
 }
 
-func (generationError GeneralError) Error() string {
-	return generationError.Message
+func (e GeneralError) Error() string {
+	return e.Message
 }

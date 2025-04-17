@@ -16,7 +16,7 @@ import (
 func main() {
 
 	//TODO: Add a tui to the generation, selection, saving, and lookup processes.
-	
+
 	commandFlags := cli.GetFlags()
 
 	flag.Parse()
@@ -43,7 +43,10 @@ func main() {
 
 	fmt.Println("Select an Option to copy to save to your bucket")
 	pwIndex := cli.ReadInput()
-	password := cli.GetVariant(pwIndex)
+	password, err := cli.GetVariant(pwIndex)
+	if err != nil {
+		log.Fatal("Entry must be numeric")
+	}
 
 	fmt.Println("What is the username?")
 	username := cli.ReadInput()

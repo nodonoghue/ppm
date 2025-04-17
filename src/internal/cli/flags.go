@@ -7,68 +7,70 @@ import (
 	"github.com/nodonoghue/ppm/internal/models"
 )
 
+var exitFunc = os.Exit
+
 func GetFlags() models.CommandFlags {
 	var commandFlags models.CommandFlags
-	var isPresent bool
-	commandFlags.NumVariants, isPresent = setNumVariants()
-	commandFlags.Length, isPresent = setPasswordLength()
-	commandFlags.NumLowerCase, isPresent = setNumLowerCase()
-	commandFlags.NumUpperCase, isPresent = setNumUpperCase()
-	commandFlags.NumNumbers, isPresent = setNumNumbers()
-	commandFlags.NumSpecial, isPresent = setNumSpecial()
 
-	if !isPresent {
+	commandFlags.NumVariants = setNumVariants()
+	commandFlags.Length = setPasswordLength()
+	commandFlags.NumUpperCase = setNumUpperCase()
+	commandFlags.NumNumbers = setNumNumbers()
+	commandFlags.NumSpecial = setNumSpecial()
+
+	showHelp := helpFlag()
+
+	if showHelp {
 		flag.Usage()
-		os.Exit(0)
+		exitFunc(0)
 	}
+
 	flag.Parse()
 	return commandFlags
 }
 
-func setNumVariants() (*int, bool) {
+func setNumVariants() *int {
 	val := flag.Int("v", 0, "Sets the number of password variants to generate")
 	if *val == 0 {
-		return val, false
+		return val
 	}
-	return val, true
+	return val
 }
 
-func setPasswordLength() (*int, bool) {
-	val := flag.Int("length", 0, "Sets the password length, must be at least 8 chars long")
+func setPasswordLength() *int {
+	val := flag.Int("l", 0, "Sets the password length, must be at least 8 chars long")
 	if *val == 0 {
-		return val, false
+		*val = 8
+		return val
 	}
-	return val, true
+	return val
 }
 
-func setNumUpperCase() (*int, bool) {
+func setNumUpperCase() *int {
 	val := flag.Int("u", 0, "Sets the number of upper case chars in each variant")
 	if *val == 0 {
-		return val, false
+		return val
 	}
-	return val, true
+	return val
 }
 
-func setNumLowerCase() (*int, bool) {
-	val := flag.Int("l", 0, "Sets the number of lower case chars in each variant.  Will be overwritten if the sum of all char settings is less than 8 to ensure the password length is at least 8 chars.")
-	if *val == 0 {
-		return val, false
-	}
-	return val, true
-}
-
-func setNumNumbers() (*int, bool) {
+func setNumNumbers() *int {
 	val := flag.Int("n", 0, "Sets the number of number chars in each variant")
 	if *val == 0 {
-		return val, false
+		return val
 	}
-	return val, true
+	return val
 }
 
-func setNumSpecial() (*int, bool) {
+func setNumSpecial() *int {
 	val := flag.Int("s", 0, "Sets the number of special ( ! @ # $ % ^ & * ) chars in each variant")
 	if *val == 0 {
-		return val, false
+		return val
 	}
-	return val, true
+	return val
+}
+
+func helpFlag() bool {
+	val := flag.Bool("h", false, "Prints this help message")
+	return *val
 }

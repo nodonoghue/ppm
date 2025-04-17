@@ -14,16 +14,16 @@ func ReadInput() string {
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		log.Fatal("Unable to read input")
+		log.Fatal("Unable to read input", err)
 	}
 
 	return strings.Replace(input, "\n", "", -1)
 }
 
-func GetVariant(index string) string {
+func GetVariant(index string) (string, error) {
 	num, err := strconv.Atoi(index)
 	if err != nil {
-		log.Fatal("Input must be numeric. ", err.Error())
+		return "", err
 	}
-	return models.Variants[num-1]
+	return models.Variants[num-1], nil
 }
