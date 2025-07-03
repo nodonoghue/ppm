@@ -4,70 +4,69 @@ import (
 	"math/rand"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/nodonoghue/ppm/internal/models"
 	"github.com/nodonoghue/ppm/internal/models/constants"
 )
 
-func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.CommandFlags) {
+func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.CommandFlags, r *rand.Rand) {
 	defer wg.Done()
-	rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	var builder strings.Builder
+	builder.Grow(*configuration.Length)
 
 	if *configuration.NumUpperCase > 0 {
-		builder.Write([]byte(getUpperChars(*configuration.NumUpperCase)))
+		builder.Write([]byte(getUpperChars(*configuration.NumUpperCase, r)))
 	}
 	if *configuration.NumNumbers > 0 {
-		builder.Write([]byte(getNumberChars(*configuration.NumNumbers)))
+		builder.Write([]byte(getNumberChars(*configuration.NumNumbers, r)))
 	}
 	if *configuration.NumSpecial > 0 {
-		builder.Write([]byte(getSpecialChars(*configuration.NumSpecial)))
+		builder.Write([]byte(getSpecialChars(*configuration.NumSpecial, r)))
 	}
 
 	numLower := getNumLower(configuration)
 	if numLower > 0 {
-		builder.Write([]byte(getLowerChars(numLower)))
+		builder.Write([]byte(getLowerChars(numLower, r)))
 	}
 
-	ch <- shuffleChars(strings.Split(builder.String(), ""))
+	ch <- shuffleChars(strings.Split(builder.String(), ""), r)
 }
 
-func getUpperChars(numUpper int) string {
+func getUpperChars(numUpper int, r *rand.Rand) string {
 	buf := make([]byte, numUpper)
-	for i := 0; i < numUpper; i++ {
-		buf[i] = constants.UpperCase[rand.Intn(len(constants.UpperCase))]
+	for i := range numUpper {
+		buf[i] = constants.UpperCase[r.Intn(len(constants.UpperCase))]
 	}
 	return string(buf)
 }
 
-func getNumberChars(numNumbers int) string {
+func getNumberChars(numNumbers int, r *rand.Rand) string {
 	buf := make([]byte, numNumbers)
-	for i := 0; i < numNumbers; i++ {
-		buf[i] = constants.Numbers[rand.Intn(len(constants.Numbers))]
+	for i := range numNumbers {
+		buf[i] = constants.Numbers[r.Intn(len(constants.Numbers))]
 	}
 	return string(buf)
 }
 
-func getSpecialChars(numSpecialChars int) string {
+func getSpecialChars(numSpecialChars int, r *rand.Rand) string {
 	buf := make([]byte, numSpecialChars)
-	for i := 0; i < numSpecialChars; i++ {
-		buf[i] = constants.SpecialChars[rand.Intn(len(constants.SpecialChars))]
+	for i := range numSpecialChars {
+		buf[i] = constants.SpecialChars[r.Intn(len(constants.SpecialChars))]
 	}
 	return string(buf)
 }
 
-func getLowerChars(numLower int) string {
+func getLowerChars(numLower int, r *rand.Rand) string {
 	buf := make([]byte, numLower)
 	for i := 0; i < numLower; i++ {
-		buf[i] = constants.LowerCase[rand.Intn(len(constants.LowerCase))]
+		buf[i] = constants.LowerCase[r.Intn(len(constants.LowerCase))]
 	}
 	return string(buf)
 }
 
-func shuffleChars(chars []string) string {
-	rand.Shuffle(len(chars), func(i, j int) {
+func shuffleChars(chars []string, r *rand.Rand) string {
+	r.Shuffle(len(chars), func(i, j int) {
 		chars[i], chars[j] = chars[j], chars[i]
 	})
 	return strings.Join(chars, "")

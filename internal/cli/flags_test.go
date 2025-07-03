@@ -53,3 +53,41 @@ func TestGetFlags_Help(t *testing.T) {
 
 	GetFlags()
 }
+
+func TestGetFlags_InvalidLength(t *testing.T) {
+	originalExit := exitFunc
+	defer func() {
+		exitFunc = originalExit
+	}()
+
+	exitFunc = func(code int) { panic("exit called") }
+
+	os.Args = []string{"cmd", "-l=7"}
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("expected exitFunc to be called, but it wasn't")
+		}
+	}()
+
+	GetFlags()
+}
+
+func TestGetFlags_InvalidSum(t *testing.T) {
+	originalExit := exitFunc
+	defer func() {
+		exitFunc = originalExit
+	}()
+
+	exitFunc = func(code int) { panic("exit called") }
+
+	os.Args = []string{"cmd", "-l=10", "-u=5", "-n=5", "-s=1"}
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("expected exitFunc to be called, but it wasn't")
+		}
+	}()
+
+	GetFlags()
+}

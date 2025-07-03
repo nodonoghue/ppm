@@ -2,6 +2,7 @@ package cli
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/nodonoghue/ppm/internal/models"
@@ -12,65 +13,29 @@ var exitFunc = os.Exit
 func GetFlags() models.CommandFlags {
 	var commandFlags models.CommandFlags
 
-	commandFlags.NumVariants = setNumVariants()
-	commandFlags.Length = setPasswordLength()
-	commandFlags.NumUpperCase = setNumUpperCase()
-	commandFlags.NumNumbers = setNumNumbers()
-	commandFlags.NumSpecial = setNumSpecial()
+	commandFlags.NumVariants = flag.Int("v", 5, "Sets the number of password variants to generate")
+	commandFlags.Length = flag.Int("l", 12, "Sets the password length, must be at least 8 chars long")
+	commandFlags.NumUpperCase = flag.Int("u", 2, "Sets the number of upper case chars in each variant")
+	commandFlags.NumNumbers = flag.Int("n", 2, "Sets the number of number chars in each variant")
+	commandFlags.NumSpecial = flag.Int("s", 2, "Sets the number of special ( ! @ # $ % ^ & * ) chars in each variant")
+	showHelp := flag.Bool("h", false, "Prints this help message")
 
-	showHelp := helpFlag()
+	flag.Parse()
 
-	if showHelp {
+	if *showHelp {
 		flag.Usage()
 		exitFunc(0)
 	}
 
-	flag.Parse()
+	if *commandFlags.Length < 8 {
+		fmt.Println("Password length must be at least 8 characters")
+		exitFunc(1)
+	}
+
+	if (*commandFlags.NumUpperCase + *commandFlags.NumNumbers + *commandFlags.NumSpecial) > *commandFlags.Length {
+		fmt.Println("The sum of uppercase, number, and special characters cannot be greater than the password length")
+		exitFunc(1)
+	}
+
 	return commandFlags
-}
-
-func setNumVariants() *int {
-	val := flag.Int("v", 0, "Sets the number of password variants to generate")
-	if *val == 0 {
-		return val
-	}
-	return val
-}
-
-func setPasswordLength() *int {
-	val := flag.Int("l", 0, "Sets the password length, must be at least 8 chars long")
-	if *val == 0 {
-		*val = 8
-		return val
-	}
-	return val
-}
-
-func setNumUpperCase() *int {
-	val := flag.Int("u", 0, "Sets the number of upper case chars in each variant")
-	if *val == 0 {
-		return val
-	}
-	return val
-}
-
-func setNumNumbers() *int {
-	val := flag.Int("n", 0, "Sets the number of number chars in each variant")
-	if *val == 0 {
-		return val
-	}
-	return val
-}
-
-func setNumSpecial() *int {
-	val := flag.Int("s", 0, "Sets the number of special ( ! @ # $ % ^ & * ) chars in each variant")
-	if *val == 0 {
-		return val
-	}
-	return val
-}
-
-func helpFlag() bool {
-	val := flag.Bool("h", false, "Prints this help message")
-	return *val
 }

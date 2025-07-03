@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"sync"
+	"time"
 
 	"github.com/nodonoghue/ppm/internal/cli"
 	"github.com/nodonoghue/ppm/internal/generate"
@@ -14,36 +15,22 @@ import (
 )
 
 func main() {
-
-	//TODO: Add a tui to the generation, selection, saving, and lookup processes.
-
 	commandFlags := cli.GetFlags()
-
-	flag.Parse()
 
 	fmt.Printf("Generating %d AllChars Password Examples:\n", *commandFlags.NumVariants)
 	fmt.Println("-----------------------------------------")
 
-	ch := make(chan string, *commandFlags.NumVariants)
-	var wg sync.WaitGroup
-	for i := 0; i < *commandFlags.NumVariants; i++ {
-		wg.Add(1)
-		go generate.Password(ch, &wg, commandFlags)
-	}
-	wg.Wait()
-	close(ch)
+	passwords := generatePasswords(commandFlags)
 
-	optionNum := 1
-	models.Variants = make(map[int]string)
-	for password := range ch {
-		fmt.Printf("Option %d: %s\n", optionNum, password)
-		models.Variants[optionNum-1] = password
-		optionNum++
+	variants := make(map[int]string)
+	for i, password := range passwords {
+		fmt.Printf("Option %d: %s\n", i+1, password)
+		variants[i] = password
 	}
 
 	fmt.Println("Select an Option to copy to save to your bucket")
 	pwIndex := cli.ReadInput()
-	password, err := cli.GetVariant(pwIndex)
+	password, err := cli.GetVariant(pwIndex, variants)
 	if err != nil {
 		log.Fatal("Entry must be numeric")
 	}
@@ -75,4 +62,25 @@ func main() {
 		log.Fatal("Unable to save struct to file: ", err.Error())
 	}
 	fmt.Println("Saved to your bucket")
+}
+
+func generatePasswords(commandFlags models.CommandFlags) []string {
+	ch := make(chan string, *commandFlags.NumVariants)
+	var wg sync.WaitGroup
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	for i := 0; i < *commandFlags.NumVariants; i++ {
+		wg.Add(1)
+		go generate.Password(ch, &wg, commandFlags, r)
+	}
+
+	wg.Wait()
+	close(ch)
+
+	passwords := make([]string, 0, *commandFlags.NumVariants)
+	for password := range ch {
+		passwords = append(passwords, password)
+	}
+
+	return passwords
 }

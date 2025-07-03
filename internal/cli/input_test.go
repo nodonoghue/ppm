@@ -63,7 +63,13 @@ func TestGetVariant(t *testing.T) {
 
 	input := ReadInput()
 
-	if _, err := GetVariant(input); err != nil {
+	variants := map[int]string{
+		0: "variant1",
+		1: "variant2",
+		2: "variant3",
+	}
+
+	if _, err := GetVariant(input, variants); err != nil {
 		t.Errorf("GetVariant() err != nil, expected non-error")
 	}
 }
@@ -92,7 +98,13 @@ func TestGetVariant_NonNumeric(t *testing.T) {
 
 	input := ReadInput()
 
-	if _, err := GetVariant(input); err == nil {
+	variants := map[int]string{
+		0: "variant1",
+		1: "variant2",
+		2: "variant3",
+	}
+
+	if _, err := GetVariant(input, variants); err == nil {
 		t.Errorf("GetVariant() err = nil, want error")
 	}
 }

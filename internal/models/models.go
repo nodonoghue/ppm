@@ -1,7 +1,5 @@
 package models
 
-var Variants map[int]string
-
 type CommandFlags struct {
 	NumVariants  *int
 	Length       *int

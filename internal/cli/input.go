@@ -6,8 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/nodonoghue/ppm/internal/models"
 )
 
 func ReadInput() string {
@@ -20,10 +18,10 @@ func ReadInput() string {
 	return strings.Replace(input, "\n", "", -1)
 }
 
-func GetVariant(index string) (string, error) {
+func GetVariant(index string, variants map[int]string) (string, error) {
 	num, err := strconv.Atoi(index)
 	if err != nil {
 		return "", err
 	}
-	return models.Variants[num-1], nil
+	return variants[num-1], nil
 }
