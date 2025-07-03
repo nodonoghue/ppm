@@ -59,7 +59,7 @@ func getSpecialChars(numSpecialChars int, r *rand.Rand) string {
 
 func getLowerChars(numLower int, r *rand.Rand) string {
 	buf := make([]byte, numLower)
-	for i := 0; i < numLower; i++ {
+	for i := range numLower {
 		buf[i] = constants.LowerCase[r.Intn(len(constants.LowerCase))]
 	}
 	return string(buf)

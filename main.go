@@ -69,7 +69,7 @@ func generatePasswords(commandFlags models.CommandFlags) []string {
 	var wg sync.WaitGroup
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	for i := 0; i < *commandFlags.NumVariants; i++ {
+	for range *commandFlags.NumVariants {
 		wg.Add(1)
 		go generate.Password(ch, &wg, commandFlags, r)
 	}
