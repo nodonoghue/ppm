@@ -1,2 +1,2 @@
 # PPM
-CLI Personal Password Manager/Generator written in Go
+Personal Password Manager/Generator written in Go
