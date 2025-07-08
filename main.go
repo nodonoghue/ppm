@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	"sync"
 	"syscall"
 	"time"
@@ -118,9 +120,20 @@ func getPassword(existingVault bool) string {
 	} else {
 		fmt.Println("Enter password to encrypt vault:")
 	}
-	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
-	if err != nil {
-		log.Fatal("Unable to read password: ", err.Error())
+
+	if term.IsTerminal(int(syscall.Stdin)) {
+		bytePassword, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			log.Fatal("Unable to read password: ", err.Error())
+		}
+		return string(bytePassword)
+	} else {
+		fmt.Println("Warning: running in a non-interactive terminal, password will be echoed.")
+		reader := bufio.NewReader(os.Stdin)
+		password, err := reader.ReadString('\n')
+		if err != nil {
+			log.Fatal("Unable to read password: ", err.Error())
+		}
+		return password
 	}
-	return string(bytePassword)
 }
