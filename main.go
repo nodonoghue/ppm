@@ -1,21 +1,45 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/nodonoghue/ppm/internal/cli"
+	"github.com/nodonoghue/ppm/internal/encryption"
 	"github.com/nodonoghue/ppm/internal/generate"
 	"github.com/nodonoghue/ppm/internal/models"
 	"github.com/nodonoghue/ppm/internal/save"
+	"golang.org/x/term"
 )
 
 func main() {
 	commandFlags := cli.GetFlags()
+
+	var drops []models.BucketDrop
+
+	data, err := save.ReadFile()
+	if err != nil {
+		log.Fatal("Unable to read vault: ", err.Error())
+	}
+
+	password := getPassword(data != nil)
+
+	if data != nil {
+		decryptedData, err := encryption.Decrypt(data, password)
+		if err != nil {
+			log.Fatal("Unable to decrypt vault: ", err.Error())
+		}
+		if err := json.Unmarshal(decryptedData, &drops); err != nil {
+			log.Fatal("Unable to unmarshal vault: ", err.Error())
+		}
+	}
 
 	fmt.Printf("Generating %d AllChars Password Examples:\n", *commandFlags.NumVariants)
 	fmt.Println("-----------------------------------------")
@@ -30,7 +54,7 @@ func main() {
 
 	fmt.Println("Select an Option to copy to save to your bucket")
 	pwIndex := cli.ReadInput()
-	password, err := cli.GetVariant(pwIndex, variants)
+	selectedPassword, err := cli.GetVariant(pwIndex, variants)
 	if err != nil {
 		log.Fatal("Entry must be numeric")
 	}
@@ -46,19 +70,24 @@ func main() {
 
 	var drop models.BucketDrop
 
-	drop.Password = password
+	drop.Password = selectedPassword
 	drop.Name = name
 	drop.URI = uri
 	drop.Username = username
 
-	fmt.Printf("You have selected: %s\n", password)
+	drops = append(drops, drop)
 
-	u, err := json.Marshal(drop)
+	marshalledDrops, err := json.Marshal(drops)
 	if err != nil {
 		log.Fatal("Unable to marshal struct to json: ", err.Error())
 	}
 
-	if err := save.Value(string(u)); err != nil {
+	encryptedDrops, err := encryption.Encrypt(marshalledDrops, password)
+	if err != nil {
+		log.Fatal("Unable to encrypt vault: ", err.Error())
+	}
+
+	if err := save.OverwriteFile(encryptedDrops); err != nil {
 		log.Fatal("Unable to save struct to file: ", err.Error())
 	}
 	fmt.Println("Saved to your bucket")
@@ -83,4 +112,28 @@ func generatePasswords(commandFlags models.CommandFlags) []string {
 	}
 
 	return passwords
+}
+
+func getPassword(existingVault bool) string {
+	if existingVault {
+		fmt.Println("Enter password to decrypt vault:")
+	} else {
+		fmt.Println("Enter password to encrypt vault:")
+	}
+
+	if term.IsTerminal(int(syscall.Stdin)) {
+		bytePassword, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			log.Fatal("Unable to read password: ", err.Error())
+		}
+		return string(bytePassword)
+	} else {
+		fmt.Println("Warning: running in a non-interactive terminal, password will be echoed.")
+		reader := bufio.NewReader(os.Stdin)
+		password, err := reader.ReadString('\n')
+		if err != nil {
+			log.Fatal("Unable to read password: ", err.Error())
+		}
+		return password
+	}
 }
