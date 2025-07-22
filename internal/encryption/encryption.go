@@ -42,17 +42,17 @@ func Encrypt(data []byte, password string) ([]byte, error) {
 		return nil, err
 	}
 
-	ciphertext := gcm.Seal(nonce, nonce, data, nil)
-	return append(salt, ciphertext...), nil
+	cipherText := gcm.Seal(nonce, nonce, data, nil)
+	return append(salt, cipherText...), nil
 }
 
 func Decrypt(data []byte, password string) ([]byte, error) {
 	if len(data) < saltSize {
-		return nil, fmt.Errorf("ciphertext too short")
+		return nil, fmt.Errorf("cipherText too short")
 	}
 
 	salt := data[:saltSize]
-	ciphertext := data[saltSize:]
+	cipherText := data[saltSize:]
 
 	key := deriveKey([]byte(password), salt)
 	block, err := aes.NewCipher(key)
@@ -65,10 +65,10 @@ func Decrypt(data []byte, password string) ([]byte, error) {
 		return nil, err
 	}
 
-	if len(ciphertext) < gcm.NonceSize() {
-		return nil, fmt.Errorf("ciphertext too short")
+	if len(cipherText) < gcm.NonceSize() {
+		return nil, fmt.Errorf("cipherText too short")
 	}
 
-	nonce, ciphertext := ciphertext[:gcm.NonceSize()], ciphertext[gcm.NonceSize():]
-	return gcm.Open(nil, nonce, ciphertext, nil)
+	nonce, cipherText := cipherText[:gcm.NonceSize()], cipherText[gcm.NonceSize():]
+	return gcm.Open(nil, nonce, cipherText, nil)
 }

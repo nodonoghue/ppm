@@ -74,7 +74,7 @@ func TestGetVariant(t *testing.T) {
 	}
 }
 
-func TestGetVariant_NonNumeric(t *testing.T) {
+func TestGetVariantNonNumeric(t *testing.T) {
 	originalStdin := os.Stdin
 	defer func() { os.Stdin = originalStdin }()
 

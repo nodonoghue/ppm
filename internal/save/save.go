@@ -1,11 +1,12 @@
 package save
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
+)
 
-	"github.com/nodonoghue/ppm/internal/models/constants"
+const (
+	filename = "pwbucket.ppm"
 )
 
 func OverwriteFile(val []byte) error {
@@ -13,7 +14,7 @@ func OverwriteFile(val []byte) error {
 }
 
 func writeFile(val []byte) error {
-	filename := constants.Filename
+	filename := filename
 	file, err := openFile(filename)
 	if err != nil {
 		return err
@@ -40,10 +41,10 @@ func openFile(filename string) (*os.File, error) {
 }
 
 func ReadFile() ([]byte, error) {
-	filename := constants.Filename
+	filename := filename
 	_, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return nil, nil
 	}
-	return ioutil.ReadFile(filename)
+	return os.ReadFile(filename)
 }

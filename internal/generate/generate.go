@@ -6,7 +6,13 @@ import (
 	"sync"
 
 	"github.com/nodonoghue/ppm/internal/models"
-	"github.com/nodonoghue/ppm/internal/models/constants"
+)
+
+const (
+	upperCase    = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	lowerCase    = "abcdefghijklmnopqrstuvwxyz"
+	numbers      = "0123456789"
+	specialChars = "!@#$%^&*"
 )
 
 func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.CommandFlags, r *rand.Rand) {
@@ -36,7 +42,7 @@ func Password(ch chan<- string, wg *sync.WaitGroup, configuration models.Command
 func getUpperChars(numUpper int, r *rand.Rand) string {
 	buf := make([]byte, numUpper)
 	for i := range numUpper {
-		buf[i] = constants.UpperCase[r.Intn(len(constants.UpperCase))]
+		buf[i] = upperCase[r.Intn(len(upperCase))]
 	}
 	return string(buf)
 }
@@ -44,7 +50,7 @@ func getUpperChars(numUpper int, r *rand.Rand) string {
 func getNumberChars(numNumbers int, r *rand.Rand) string {
 	buf := make([]byte, numNumbers)
 	for i := range numNumbers {
-		buf[i] = constants.Numbers[r.Intn(len(constants.Numbers))]
+		buf[i] = numbers[r.Intn(len(numbers))]
 	}
 	return string(buf)
 }
@@ -52,7 +58,7 @@ func getNumberChars(numNumbers int, r *rand.Rand) string {
 func getSpecialChars(numSpecialChars int, r *rand.Rand) string {
 	buf := make([]byte, numSpecialChars)
 	for i := range numSpecialChars {
-		buf[i] = constants.SpecialChars[r.Intn(len(constants.SpecialChars))]
+		buf[i] = specialChars[r.Intn(len(specialChars))]
 	}
 	return string(buf)
 }
@@ -60,7 +66,7 @@ func getSpecialChars(numSpecialChars int, r *rand.Rand) string {
 func getLowerChars(numLower int, r *rand.Rand) string {
 	buf := make([]byte, numLower)
 	for i := range numLower {
-		buf[i] = constants.LowerCase[r.Intn(len(constants.LowerCase))]
+		buf[i] = lowerCase[r.Intn(len(lowerCase))]
 	}
 	return string(buf)
 }

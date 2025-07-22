@@ -5,10 +5,6 @@ import (
 	"testing"
 )
 
-func mockExit(code int) {
-	panic("exit called")
-}
-
 func TestFlags(t *testing.T) {
 	os.Args = []string{"cmd", "-v=5", "-l=15", "-u=3", "-n=3", "-s=2"}
 
@@ -35,7 +31,7 @@ func TestFlags(t *testing.T) {
 	}
 }
 
-func TestGetFlags_Help(t *testing.T) {
+func TestGetFlagsHelp(t *testing.T) {
 	originalExit := exitFunc
 	defer func() {
 		exitFunc = originalExit
@@ -54,7 +50,7 @@ func TestGetFlags_Help(t *testing.T) {
 	GetFlags()
 }
 
-func TestGetFlags_InvalidLength(t *testing.T) {
+func TestGetFlagsInvalidLength(t *testing.T) {
 	originalExit := exitFunc
 	defer func() {
 		exitFunc = originalExit
@@ -73,7 +69,7 @@ func TestGetFlags_InvalidLength(t *testing.T) {
 	GetFlags()
 }
 
-func TestGetFlags_InvalidSum(t *testing.T) {
+func TestGetFlagsInvalidSum(t *testing.T) {
 	originalExit := exitFunc
 	defer func() {
 		exitFunc = originalExit

@@ -6,10 +6,12 @@ import (
 	"time"
 )
 
-var upperCaseCompare = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-var lowerCaseCompare = "abcdefghijklmnopqrstuvwxyz"
-var numberCompare = "0123456789"
-var specialCharsCompare = "!@#$%^&*"
+const (
+	upperCaseCompare    = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	lowerCaseCompare    = "abcdefghijklmnopqrstuvwxyz"
+	numberCompare       = "0123456789"
+	specialCharsCompare = "!@#$%^&*"
+)
 
 func TestGetUpperChars(t *testing.T) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
