@@ -11,6 +11,9 @@ const (
 	lowerCaseCompare    = "abcdefghijklmnopqrstuvwxyz"
 	numberCompare       = "0123456789"
 	specialCharsCompare = "!@#$%^&*"
+
+	lengthError string = "expected length %d, but got %d"
+	charError   string = "Character '%c' is not in the %s set"
 )
 
 func TestGetUpperChars(t *testing.T) {
@@ -20,12 +23,12 @@ func TestGetUpperChars(t *testing.T) {
 	result := getUpperChars(numUpper, r)
 
 	if len(result) != numUpper {
-		t.Errorf("Expected length %d, but got %d", numUpper, len(result))
+		t.Errorf(lengthError, numUpper, len(result))
 	}
 
 	for _, char := range result {
 		if !contains(upperCaseCompare, char) {
-			t.Errorf("Character '%c' is not in the upperCaseCompare set", char)
+			t.Errorf(charError, char, "upperCaseCompare")
 		}
 	}
 }
@@ -37,7 +40,7 @@ func TestGetZeroUpper(t *testing.T) {
 	result := getUpperChars(numUpper, r)
 
 	if len(result) != numUpper {
-		t.Errorf("Expected length %d, but got %d", numUpper, len(result))
+		t.Errorf(lengthError, numUpper, len(result))
 	}
 }
 
@@ -48,12 +51,12 @@ func TestGetLowerCase(t *testing.T) {
 	result := getLowerChars(numLower, r)
 
 	if len(result) != numLower {
-		t.Errorf("Expected length %d, but got %d", numLower, len(result))
+		t.Errorf(lengthError, numLower, len(result))
 	}
 
 	for _, char := range result {
 		if !contains(lowerCaseCompare, char) {
-			t.Errorf("Character '%c' is not in the lowerCaseCompare set", char)
+			t.Errorf(charError, char, "lowerCaseCompare")
 		}
 	}
 }
@@ -65,7 +68,7 @@ func TestGetZeroLower(t *testing.T) {
 	result := getLowerChars(numLower, r)
 
 	if len(result) != numLower {
-		t.Errorf("Expected length %d, but got %d", numLower, len(result))
+		t.Errorf(lengthError, numLower, len(result))
 	}
 }
 
@@ -76,12 +79,12 @@ func TestGetSpecialChars(t *testing.T) {
 	result := getSpecialChars(numSpecial, r)
 
 	if len(result) != numSpecial {
-		t.Errorf("Expected length %d, but got %d", numSpecial, len(result))
+		t.Errorf(lengthError, numSpecial, len(result))
 	}
 
 	for _, char := range result {
 		if !contains(specialCharsCompare, char) {
-			t.Errorf("Character '%c' is not in the specialChars set", char)
+			t.Errorf(charError, char, "specialCharsCompare")
 		}
 	}
 }
@@ -92,7 +95,7 @@ func TestGetZeroSpecial(t *testing.T) {
 	result := getSpecialChars(numSpecial, r)
 
 	if len(result) != numSpecial {
-		t.Errorf("Expected length %d, but got %d", numSpecial, len(result))
+		t.Errorf(lengthError, numSpecial, len(result))
 	}
 }
 
@@ -103,12 +106,12 @@ func TestGetNumbers(t *testing.T) {
 	result := getNumberChars(numNumbers, r)
 
 	if len(result) != numNumbers {
-		t.Errorf("Expected length %d, but got %d", numNumbers, len(result))
+		t.Errorf(lengthError, numNumbers, len(result))
 	}
 
 	for _, char := range result {
 		if !contains(numberCompare, char) {
-			t.Errorf("Character '%c' is not in the numberChars set", char)
+			t.Errorf(charError, char, "numberCompare")
 		}
 	}
 }
@@ -119,7 +122,7 @@ func TestGetZeroNumbers(t *testing.T) {
 	result := getNumberChars(numNumbers, r)
 
 	if len(result) != numNumbers {
-		t.Errorf("Expected length %d, but got %d", numNumbers, len(result))
+		t.Errorf(lengthError, numNumbers, len(result))
 	}
 }
 

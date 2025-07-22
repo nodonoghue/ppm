@@ -5,6 +5,11 @@ import (
 	"testing"
 )
 
+const (
+	exitCalled    string = "exit called"
+	exitCallError string = "expected exitFunc to be called, but it wasn't"
+)
+
 func TestFlags(t *testing.T) {
 	os.Args = []string{"cmd", "-v=5", "-l=15", "-u=3", "-n=3", "-s=2"}
 
@@ -37,13 +42,13 @@ func TestGetFlagsHelp(t *testing.T) {
 		exitFunc = originalExit
 	}()
 
-	exitFunc = func(code int) { panic("exit called") }
+	exitFunc = func(code int) { panic(exitCalled) }
 
 	os.Args = []string{"cmd", "-h"}
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("expected exitFunc to be called, but it wasn't")
+			t.Errorf(exitCallError)
 		}
 	}()
 
@@ -56,13 +61,13 @@ func TestGetFlagsInvalidLength(t *testing.T) {
 		exitFunc = originalExit
 	}()
 
-	exitFunc = func(code int) { panic("exit called") }
+	exitFunc = func(code int) { panic(exitCalled) }
 
 	os.Args = []string{"cmd", "-l=7"}
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("expected exitFunc to be called, but it wasn't")
+			t.Errorf(exitCallError)
 		}
 	}()
 
@@ -75,13 +80,13 @@ func TestGetFlagsInvalidSum(t *testing.T) {
 		exitFunc = originalExit
 	}()
 
-	exitFunc = func(code int) { panic("exit called") }
+	exitFunc = func(code int) { panic(exitCalled) }
 
 	os.Args = []string{"cmd", "-l=10", "-u=5", "-n=5", "-s=1"}
 
 	defer func() {
 		if r := recover(); r == nil {
-			t.Errorf("expected exitFunc to be called, but it wasn't")
+			t.Errorf(exitCallError)
 		}
 	}()
 
